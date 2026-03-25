@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #050510;
+  --color-foreground: #eaeaea;
+
+  /* Cyberpunk Colors */
+  --color-cyber-cyan: #00f0ff;
+  --color-cyber-purple: #bd00ff;
+  --color-cyber-magenta: #ff003c;
+  --color-cyber-yellow: #fcee0a;
+  --color-cyber-dark: #09090f;
+  --color-cyber-darker: #050508;
+  --color-cyber-glass: rgba(20, 20, 30, 0.65);
+  --color-cyber-glass-hover: rgba(40, 40, 60, 0.85);
+
+  --font-orbitron: var(--font-orbitron);
+  --font-inter: var(--font-inter);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@utility glass {
+  background: var(--color-cyber-glass);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 240, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
-@media (prefers-color-scheme: dark) {
+@utility glass-hover {
+  background: var(--color-cyber-glass-hover);
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+@utility text-glow-cyan {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.8), 0 0 20px rgba(0, 240, 255, 0.4);
+}
+
+@utility text-glow-purple {
+  text-shadow: 0 0 8px rgba(189, 0, 255, 0.8), 0 0 20px rgba(189, 0, 255, 0.4);
+}
+
+@utility text-glow-magenta {
+  text-shadow: 0 0 8px rgba(255, 0, 60, 0.8), 0 0 20px rgba(255, 0, 60, 0.4);
+}
+
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #050510;
+    --foreground: #eaeaea;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    @apply font-inter antialiased overflow-hidden selection:bg-cyber-cyan selection:text-black;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgba(9, 9, 15, 0.5);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(0, 240, 255, 0.3);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 240, 255, 0.6);
+  }
 }
