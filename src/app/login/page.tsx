@@ -3,7 +3,7 @@
 import GlassCard from '@/components/ui/GlassCard';
 import NeonButton from '@/components/ui/NeonButton';
 import ParticleBackground from '@/components/ui/ParticleBackground';
-import { createClient } from '@/lib/supabase/client';
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Terminal } from 'lucide-react';
@@ -11,18 +11,10 @@ import { Terminal } from 'lucide-react';
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
-
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
-      });
-      if (error) throw error;
+      await signIn('google', { callbackUrl: '/chat' });
     } catch (error: any) {
       console.error('Error logging in:', error.message);
       setIsLoading(false);

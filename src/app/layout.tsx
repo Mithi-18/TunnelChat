@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Orbitron, Inter } from 'next/font/google';
 import './globals.css';
+import AuthProvider from '@/components/providers/AuthProvider';
+import PeerProvider from '@/components/providers/PeerProvider';
 
 const orbitron = Orbitron({
   subsets: ['latin'],
@@ -26,7 +28,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${orbitron.variable} ${inter.variable} dark`}>
       <body className="antialiased overflow-hidden w-screen h-screen bg-cyber-dark text-cyber-foreground selection:bg-cyber-cyan selection:text-black">
-        {children}
+        <AuthProvider>
+          <PeerProvider>
+            {children}
+          </PeerProvider>
+        </AuthProvider>
       </body>
     </html>
   );

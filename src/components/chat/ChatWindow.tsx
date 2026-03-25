@@ -2,41 +2,41 @@
 
 import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
-import { Phone, Video, Search, MoreVertical } from 'lucide-react';
+import { Phone, Video, Search, MoreVertical, Wifi, WifiOff, Loader2 } from 'lucide-react';
 import { useRef, useEffect } from 'react';
-
-// Dummy data for visual design
-const DUMMY_MESSAGES = [
-  { id: '1', content: 'Hey, are you on the grid yet?', isOwn: false, status: 'read' as const, time: '10:42 AM' },
-  { id: '2', content: 'Just connected. The proxy is secure.', isOwn: true, status: 'read' as const, time: '10:43 AM' },
-  { id: '3', content: 'Good. Sending you the coordinates now.', isOwn: false, status: 'read' as const, time: '10:45 AM' },
-  { id: '4', content: 'Got them. Decrypting the payload.', isOwn: true, status: 'delivered' as const, time: '10:46 AM' },
-];
+import { useChatManager } from '@/hooks/useChatManager';
+import { usePeer } from '@/components/providers/PeerProvider';
 
 export default function ChatWindow({ chatId }: { chatId: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { messages, status, sendMessage } = useChatManager(chatId);
+  const { myPeerId } = usePeer();
 
   // Auto-scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, []);
+  }, [messages]);
 
   return (
     <div className="flex flex-col h-full bg-cyber-darker/50 w-full relative">
       {/* Header */}
-      <div className="h-20 border-b border-cyber-cyan/20 bg-cyber-dark/80 backdrop-blur-md flex items-center justify-between px-6 z-10">
+      <div className="h-20 border-b border-cyber-cyan/20 bg-cyber-dark/80 backdrop-blur-md flex items-center justify-between px-6 z-10 shrink-0 shadow-md">
         <div className="flex items-center gap-4">
           <div className="relative">
-            <div className="w-12 h-12 rounded-full bg-cyber-purple/20 border-2 border-cyber-purple flex items-center justify-center animate-pulse">
-              <span className="font-orbitron text-cyber-purple font-bold">N</span>
+            <div className="w-12 h-12 rounded-full bg-cyber-purple/20 border-2 border-cyber-purple flex items-center justify-center">
+              <span className="font-orbitron font-bold text-cyber-purple">{chatId.substring(0, 2).toUpperCase()}</span>
             </div>
-            <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-cyber-cyan border-2 border-cyber-dark rounded-full shadow-[0_0_10px_rgba(0,240,255,1)]"></div>
+            <div className={`absolute bottom-0 right-0 w-3.5 h-3.5 border-2 border-cyber-dark rounded-full ${status === 'connected' ? 'bg-cyber-cyan shadow-[0_0_10px_rgba(0,240,255,1)]' : status === 'connecting' ? 'bg-cyber-yellow animate-pulse' : 'bg-red-500'}`}></div>
           </div>
           <div>
-            <h3 className="font-orbitron font-bold text-white text-glow-cyan uppercase">Neon Samurai {chatId}</h3>
-            <span className="text-xs text-cyber-cyan">Online • Neural Link Active</span>
+            <h3 className="font-orbitron font-bold text-white text-glow-cyan">PEER: {chatId.substring(0, 8)}...</h3>
+            <span className="text-xs flex items-center gap-1 font-mono mt-1">
+              {status === 'connected' && <><Wifi className="w-3 h-3 text-cyber-cyan" /><span className="text-cyber-cyan">Uplink Active</span></>}
+              {status === 'connecting' && <><Loader2 className="w-3 h-3 text-cyber-yellow animate-spin" /><span className="text-cyber-yellow">Establishing...</span></>}
+              {status === 'disconnected' && <><WifiOff className="w-3 h-3 text-red-500" /><span className="text-red-500">Disconnected</span></>}
+            </span>
           </div>
         </div>
 
@@ -54,24 +54,31 @@ export default function ChatWindow({ chatId }: { chatId: string }) {
         <div className="flex flex-col justify-end min-h-full space-y-2">
           <div className="text-center my-6">
             <span className="px-3 py-1 bg-cyber-glass text-xs text-cyber-foreground/40 rounded-full border border-white/5 uppercase tracking-widest">
-              End-to-End Encrypted Session Started
+              End-to-End P2P Session
             </span>
           </div>
           
-          {DUMMY_MESSAGES.map((msg) => (
-            <MessageBubble 
-              key={msg.id}
-              content={msg.content}
-              isOwn={msg.isOwn}
-              status={msg.status}
-              time={msg.time}
-            />
-          ))}
+          {messages.map((msg) => {
+            const date = new Date(msg.created_at);
+            const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            return (
+              <MessageBubble 
+                key={msg.id}
+                content={msg.content}
+                isOwn={msg.sender_id === myPeerId}
+                status={msg.status}
+                time={timeString}
+              />
+            );
+          })}
         </div>
       </div>
 
       {/* Input */}
-      <MessageInput />
+      <MessageInput 
+        onSend={(text) => sendMessage(text, 'text')} 
+        disabled={status !== 'connected'} 
+      />
     </div>
   );
 }
