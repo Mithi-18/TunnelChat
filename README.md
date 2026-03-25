@@ -1,4 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TunnelChat — Serverless P2P Cyberpunk Messenger
+
+![TunnelChat Preview](https://via.placeholder.com/800x400/050510/00f0ff?text=TUNNELCHAT)
+
+TunnelChat is a 100% serverless, decentralized, peer-to-peer messaging application featuring a modern Neo-Cyberpunk aesthetic. It uses WebRTC (via PeerJS) for real-time secure communication and NextAuth.js for stateless Google authentication. **No backend database is required.**
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FMithi-18%2FTunnelChat&env=GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET,NEXTAUTH_SECRET,NEXTAUTH_URL&envDescription=Add%20your%20Google%20OAuth%20credentials%20and%20NextAuth%20secrets&project-name=tunnelchat&repository-name=TunnelChat)
+
+## Features
+- 🚀 **Zero Database**: True P2P communication securely negotiated over WebRTC DataChannels.
+- 🔐 **Stateless Auth**: JWT-based Google Sign-In using NextAuth.
+- 💾 **Decentralized Storage**: Message history is kept strictly in your local browser (`localStorage`).
+- 🎨 **Cyberpunk UI**: Glassmorphism, neon glow accents, particles, and custom scrollbars using Tailwind CSS v4.
+
+## Quick Start (Local)
+
+1. Clone the repository:
+```bash
+git clone https://github.com/Mithi-18/TunnelChat.git
+cd TunnelChat
+```
+
+2. Copy the `.env.local.example` strictly to `.env.local` and add your Google Application credentials:
+```bash
+cp .env.local.example .env.local
+```
+
+3. Install and run:
+```bash
+npm install
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to access the Cyberpunk Terminal.
 
 ## Getting Started
 
